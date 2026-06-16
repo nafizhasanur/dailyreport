@@ -3,165 +3,152 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FinanceFlow</title>
+  <title>FinanceFlow - Personal Finance</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
     body { font-family: 'Inter', system-ui, sans-serif; }
-    .glass { background: rgba(255,255,255,0.08); backdrop-filter: blur(16px); }
+    .glass { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(16px); }
     .card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    .card:hover { transform: translateY(-8px); }
   </style>
 </head>
 <body class="bg-zinc-950 text-zinc-100 min-h-screen">
 
   <!-- Password Screen -->
-  <div id="password-screen" class="fixed inset-0 bg-zinc-950 flex items-center justify-center z-50 px-4">
-    <div class="glass p-10 rounded-3xl max-w-md w-full">
-      <div class="text-center mb-8">
-        <div class="w-20 h-20 mx-auto bg-gradient-to-br from-cyan-400 to-blue-600 rounded-3xl flex items-center justify-center text-4xl font-bold">FF</div>
-        <h1 class="text-4xl font-semibold mt-4">FinanceFlow</h1>
+  <div id="password-screen" class="fixed inset-0 bg-zinc-950 flex items-center justify-center z-50">
+    <div class="glass p-10 rounded-3xl w-full max-w-md border border-zinc-700 shadow-2xl">
+      <div class="text-center">
+        <div class="w-20 h-20 mx-auto bg-gradient-to-br from-cyan-400 to-blue-600 rounded-3xl flex items-center justify-center text-4xl font-bold mb-6">FF</div>
+        <h1 class="text-4xl font-semibold mb-2">FinanceFlow</h1>
+        <p class="text-zinc-400">Professional Personal Finance Tracker</p>
       </div>
-      <input id="password-input" type="password" placeholder="Enter Password" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-6 py-5 text-lg mb-6">
-      <button onclick="checkPassword()" class="w-full bg-white text-black font-semibold py-5 rounded-2xl">Unlock Dashboard</button>
+      <div class="mt-10">
+        <input id="password-input" type="password" placeholder="Enter Password" 
+               class="w-full bg-zinc-900 border border-zinc-600 rounded-2xl px-6 py-5 text-lg focus:outline-none focus:border-cyan-500">
+        <button onclick="checkPassword()" 
+                class="mt-6 w-full bg-white text-black font-semibold py-5 rounded-2xl hover:bg-cyan-400 transition-all text-lg">
+          Unlock Dashboard
+        </button>
+      </div>
     </div>
   </div>
 
+  <!-- Main Application -->
   <div id="main-app" class="hidden max-w-7xl mx-auto p-4 md:p-8">
     <header class="flex justify-between items-center mb-10">
-      <h1 class="text-3xl font-bold flex items-center gap-3"><span class="text-cyan-400">FF</span> FinanceFlow</h1>
-      <div class="flex gap-2 bg-zinc-900 p-1 rounded-3xl">
+      <div class="flex items-center gap-4">
+        <div class="w-11 h-11 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl flex items-center justify-center text-3xl font-bold">FF</div>
+        <h1 class="text-3xl font-semibold tracking-tight">FinanceFlow</h1>
+      </div>
+      <div class="flex gap-3 bg-zinc-900 rounded-3xl p-1">
         <button onclick="showTab(0)" class="tab-btn px-6 py-3 rounded-3xl font-medium">Dashboard</button>
         <button onclick="showTab(1)" class="tab-btn px-6 py-3 rounded-3xl font-medium">New Entry</button>
         <button onclick="showTab(2)" class="tab-btn px-6 py-3 rounded-3xl font-medium">Reports</button>
       </div>
     </header>
 
-    <!-- Dashboard -->
+    <!-- Dashboard Tab -->
     <div id="tab-0" class="tab-content">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="glass rounded-3xl p-8 card"><p class="text-zinc-400">Income</p><p id="inc" class="text-5xl font-semibold text-emerald-400 mt-2">0৳</p></div>
-        <div class="glass rounded-3xl p-8 card"><p class="text-zinc-400">Expense</p><p id="exp" class="text-5xl font-semibold text-rose-400 mt-2">0৳</p></div>
-        <div class="glass rounded-3xl p-8 card"><p class="text-zinc-400">Savings</p><p id="sav" class="text-5xl font-semibold text-cyan-400 mt-2">0৳</p></div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div class="glass rounded-3xl p-8 card">
+          <p class="text-zinc-400">Total Income</p>
+          <p id="total-income" class="text-5xl font-semibold text-emerald-400 mt-4">0৳</p>
+        </div>
+        <div class="glass rounded-3xl p-8 card">
+          <p class="text-zinc-400">Total Expense</p>
+          <p id="total-expense" class="text-5xl font-semibold text-rose-400 mt-4">0৳</p>
+        </div>
+        <div class="glass rounded-3xl p-8 card">
+          <p class="text-zinc-400">Net Savings</p>
+          <p id="net-savings" class="text-5xl font-semibold text-cyan-400 mt-4">0৳</p>
+        </div>
       </div>
     </div>
 
-    <!-- New Entry -->
+    <!-- New Entry Tab -->
     <div id="tab-1" class="tab-content hidden">
-      <div class="max-w-2xl mx-auto glass rounded-3xl p-8 md:p-10">
-        <h2 class="text-2xl font-semibold mb-8">New Transaction</h2>
-        <form id="entry-form" class="space-y-6">
-          <select id="type" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl p-5">
-            <option value="Income">Income</option>
-            <option value="Expense">Expense</option>
-            <option value="Savings">Savings</option>
-          </select>
-          <input id="category" type="text" placeholder="Category" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl p-5">
-          <div class="grid grid-cols-2 gap-6">
-            <input id="amount" type="number" placeholder="Amount (৳)" class="bg-zinc-900 border border-zinc-700 rounded-2xl p-5">
-            <input id="date" type="date" class="bg-zinc-900 border border-zinc-700 rounded-2xl p-5">
-          </div>
-          <textarea id="description" placeholder="Description" rows="3" class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl p-5"></textarea>
-          <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold py-5 rounded-3xl text-lg">Add Transaction</button>
-        </form>
+      <div class="max-w-2xl mx-auto">
+        <div class="glass rounded-3xl p-8 md:p-10">
+          <h2 class="text-2xl font-semibold mb-8">New Transaction</h2>
+          <form id="entry-form" class="space-y-8">
+            <div>
+              <label class="block text-sm text-zinc-400 mb-2">Type</label>
+              <select id="type" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl p-5 focus:border-cyan-500">
+                <option value="Income">Income</option>
+                <option value="Expense">Expense</option>
+                <option value="Savings">Savings</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm text-zinc-400 mb-2">Category</label>
+              <input id="category" type="text" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl p-5" placeholder="Salary, Food, Rent, Transport...">
+            </div>
+            <div class="grid grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm text-zinc-400 mb-2">Amount (BDT)</label>
+                <input id="amount" type="number" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl p-5" required>
+              </div>
+              <div>
+                <label class="block text-sm text-zinc-400 mb-2">Date</label>
+                <input id="date" type="date" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl p-5">
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm text-zinc-400 mb-2">Description</label>
+              <textarea id="description" rows="4" class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl p-5"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-white text-black font-semibold py-5 rounded-3xl hover:bg-cyan-400 transition-all text-lg">Add Transaction</button>
+          </form>
+        </div>
       </div>
     </div>
 
-    <!-- Reports -->
+    <!-- Monthly Reports Tab -->
     <div id="tab-2" class="tab-content hidden">
       <div class="glass rounded-3xl p-8">
         <div class="flex justify-between items-center mb-8">
-          <h2 class="text-3xl font-semibold">Monthly Report</h2>
-          <button onclick="printReport()" class="bg-zinc-800 px-6 py-3 rounded-2xl">Print</button>
+          <h2 class="text-3xl font-semibold">Monthly Financial Report</h2>
+          <input id="month-select" type="month" class="bg-zinc-900 border border-zinc-700 rounded-2xl px-6 py-3">
         </div>
-        <input id="month-select" type="month" onchange="loadMonthlyReport()" class="bg-zinc-900 border border-zinc-700 rounded-2xl px-6 py-3 mb-8">
-        <div id="monthly-summary" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
-        <canvas id="reportChart" class="mt-10"></canvas>
+        <div id="monthly-summary" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10"></div>
+        <canvas id="reportChart" class="mt-8"></canvas>
       </div>
     </div>
   </div>
 
   <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbxR9VT5qPHhtjOxmk0GsYwHLOisCJRLYnoLWf2AauRNQD9I6AqsUrCAe6Qr_B65hlJb5A/exec';
-    const PASSWORD = "123456";
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxNF2OxiFMxMMUvxuTkATzBK2eBx5wA0G8EBmb46cWELSM0uO0iLLml02Wx04WxO_CsIQ/exec';
+    const PASSWORD = "nafiz"; // Change if you want
 
-    let chartInstance = null;
+    let currentChart = null;
 
     function checkPassword() {
       if (document.getElementById('password-input').value === PASSWORD) {
         document.getElementById('password-screen').classList.add('hidden');
         document.getElementById('main-app').classList.remove('hidden');
-        showTab(0);
+        showTab(1);
       } else {
-        alert("Wrong Password");
+        alert("Incorrect Password");
       }
     }
 
     function showTab(n) {
-      document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
       document.getElementById(`tab-${n}`).classList.remove('hidden');
-      if (n === 0) loadDashboard();
-      if (n === 2) loadMonthlyReport();
-    }
-
-    async function loadDashboard() {
-      try {
-        const month = new Date().toISOString().slice(0,7);
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({action: 'getMonthlySummary', yearMonth: month})
-        });
-        const data = await res.json();
-        document.getElementById('inc').textContent = (data.income || 0) + '৳';
-        document.getElementById('exp').textContent = (data.expense || 0) + '৳';
-        document.getElementById('sav').textContent = (data.savings || 0) + '৳';
-      } catch(e) { console.log("Dashboard load error"); }
-    }
-
-    async function loadMonthlyReport() {
-      const month = document.getElementById('month-select').value;
-      if (!month) return;
-      try {
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({action: 'getMonthlySummary', yearMonth: month})
-        });
-        const data = await res.json();
-
-        document.getElementById('monthly-summary').innerHTML = `
-          <div class="glass p-6 rounded-3xl"><p class="text-zinc-400">Income</p><p class="text-4xl font-semibold text-emerald-400">${data.income||0}৳</p></div>
-          <div class="glass p-6 rounded-3xl"><p class="text-zinc-400">Expense</p><p class="text-4xl font-semibold text-rose-400">${data.expense||0}৳</p></div>
-          <div class="glass p-6 rounded-3xl"><p class="text-zinc-400">Savings</p><p class="text-4xl font-semibold text-cyan-400">${data.savings||0}৳</p></div>
-        `;
-
-        if (chartInstance) chartInstance.destroy();
-        chartInstance = new Chart(document.getElementById('reportChart'), {
-          type: 'doughnut',
-          data: {
-            labels: ['Income', 'Expense', 'Savings'],
-            datasets: [{ data: [data.income||0, data.expense||0, data.savings||0], backgroundColor: ['#10b981', '#ef4444', '#22d3ee'] }]
-          }
-        });
-      } catch(e) { console.log("Report load error"); }
-    }
-
-    function printReport() {
-      window.print();
     }
 
     // Form Submit
     document.getElementById('entry-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = e.target.querySelector('button');
-      const original = btn.innerHTML;
       btn.innerHTML = 'Adding...';
       btn.disabled = true;
 
       const data = {
         action: "add",
-        date: document.getElementById('date').value || new Date().toISOString().slice(0,10),
+        date: document.getElementById('date').value,
         type: document.getElementById('type').value,
         category: document.getElementById('category').value,
         amount: document.getElementById('amount').value,
@@ -171,31 +158,25 @@
       try {
         const res = await fetch(API_URL, {
           method: 'POST',
-          headers: {'Content-Type': 'application/json'},
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(data)
         });
         const result = await res.json();
 
         if (result.success) {
-          alert("✅ Transaction Added Successfully!");
+          alert("Transaction Added Successfully!");
           e.target.reset();
           document.getElementById('date').valueAsDate = new Date();
-          loadDashboard();
         } else {
-          alert("Error: " + (result.message || "Unknown error"));
+          alert("Error: " + result.message);
         }
-      } catch(err) {
+      } catch (err) {
+        alert("Connection Error. Please try again.");
         console.error(err);
-        alert("❌ Connection Error\n\nMake sure Apps Script is Redeployed with Anyone access.");
       }
-      btn.innerHTML = original;
+      btn.innerHTML = 'Add Transaction';
       btn.disabled = false;
     });
-
-    // Auto Refresh
-    setInterval(() => {
-      if (!document.getElementById('tab-0').classList.contains('hidden')) loadDashboard();
-    }, 8000);
 
     // Initialize
     document.getElementById('date').valueAsDate = new Date();
