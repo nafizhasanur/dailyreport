@@ -11,20 +11,19 @@
     body { font-family: 'Inter', system-ui, sans-serif; }
     .glass { background: rgba(255,255,255,0.08); backdrop-filter: blur(16px); }
     .card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-    .card:hover { transform: translateY(-6px); }
   </style>
 </head>
 <body class="bg-zinc-950 text-zinc-100 min-h-screen">
 
-  <!-- Password -->
-  <div id="password-screen" class="fixed inset-0 bg-zinc-950 flex items-center justify-center z-50">
+  <!-- Password Screen -->
+  <div id="password-screen" class="fixed inset-0 bg-zinc-950 flex items-center justify-center z-50 px-4">
     <div class="glass p-10 rounded-3xl max-w-md w-full">
       <div class="text-center mb-8">
         <div class="w-20 h-20 mx-auto bg-gradient-to-br from-cyan-400 to-blue-600 rounded-3xl flex items-center justify-center text-4xl font-bold">FF</div>
         <h1 class="text-4xl font-semibold mt-4">FinanceFlow</h1>
       </div>
-      <input id="password-input" type="password" placeholder="Password" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-6 py-5 text-lg mb-6">
-      <button onclick="checkPassword()" class="w-full bg-white text-black py-5 rounded-2xl font-semibold">Unlock</button>
+      <input id="password-input" type="password" placeholder="Enter Password" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-6 py-5 text-lg mb-6">
+      <button onclick="checkPassword()" class="w-full bg-white text-black font-semibold py-5 rounded-2xl">Unlock Dashboard</button>
     </div>
   </div>
 
@@ -32,24 +31,24 @@
     <header class="flex justify-between items-center mb-10">
       <h1 class="text-3xl font-bold flex items-center gap-3"><span class="text-cyan-400">FF</span> FinanceFlow</h1>
       <div class="flex gap-2 bg-zinc-900 p-1 rounded-3xl">
-        <button onclick="showTab(0)" class="tab-btn px-6 py-3 rounded-3xl">Dashboard</button>
-        <button onclick="showTab(1)" class="tab-btn px-6 py-3 rounded-3xl">New Entry</button>
-        <button onclick="showTab(2)" class="tab-btn px-6 py-3 rounded-3xl">Reports</button>
+        <button onclick="showTab(0)" class="tab-btn px-6 py-3 rounded-3xl font-medium">Dashboard</button>
+        <button onclick="showTab(1)" class="tab-btn px-6 py-3 rounded-3xl font-medium">New Entry</button>
+        <button onclick="showTab(2)" class="tab-btn px-6 py-3 rounded-3xl font-medium">Reports</button>
       </div>
     </header>
 
     <!-- Dashboard -->
     <div id="tab-0" class="tab-content">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="glass rounded-3xl p-8 card"><p class="text-zinc-400">Total Income</p><p id="inc" class="text-5xl font-semibold text-emerald-400 mt-2">0৳</p></div>
-        <div class="glass rounded-3xl p-8 card"><p class="text-zinc-400">Total Expense</p><p id="exp" class="text-5xl font-semibold text-rose-400 mt-2">0৳</p></div>
-        <div class="glass rounded-3xl p-8 card"><p class="text-zinc-400">Total Savings</p><p id="sav" class="text-5xl font-semibold text-cyan-400 mt-2">0৳</p></div>
+        <div class="glass rounded-3xl p-8 card"><p class="text-zinc-400">Income</p><p id="inc" class="text-5xl font-semibold text-emerald-400 mt-2">0৳</p></div>
+        <div class="glass rounded-3xl p-8 card"><p class="text-zinc-400">Expense</p><p id="exp" class="text-5xl font-semibold text-rose-400 mt-2">0৳</p></div>
+        <div class="glass rounded-3xl p-8 card"><p class="text-zinc-400">Savings</p><p id="sav" class="text-5xl font-semibold text-cyan-400 mt-2">0৳</p></div>
       </div>
     </div>
 
     <!-- New Entry -->
     <div id="tab-1" class="tab-content hidden">
-      <div class="max-w-2xl mx-auto glass rounded-3xl p-10">
+      <div class="max-w-2xl mx-auto glass rounded-3xl p-8 md:p-10">
         <h2 class="text-2xl font-semibold mb-8">New Transaction</h2>
         <form id="entry-form" class="space-y-6">
           <select id="type" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl p-5">
@@ -59,11 +58,11 @@
           </select>
           <input id="category" type="text" placeholder="Category" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl p-5">
           <div class="grid grid-cols-2 gap-6">
-            <input id="amount" type="number" placeholder="Amount" class="bg-zinc-900 border border-zinc-700 rounded-2xl p-5">
+            <input id="amount" type="number" placeholder="Amount (৳)" class="bg-zinc-900 border border-zinc-700 rounded-2xl p-5">
             <input id="date" type="date" class="bg-zinc-900 border border-zinc-700 rounded-2xl p-5">
           </div>
           <textarea id="description" placeholder="Description" rows="3" class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl p-5"></textarea>
-          <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold py-5 rounded-3xl">Add Transaction</button>
+          <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold py-5 rounded-3xl text-lg">Add Transaction</button>
         </form>
       </div>
     </div>
@@ -71,13 +70,11 @@
     <!-- Reports -->
     <div id="tab-2" class="tab-content hidden">
       <div class="glass rounded-3xl p-8">
-        <div class="flex justify-between mb-6">
-          <h2 class="text-3xl font-semibold">Monthly Financial Report</h2>
-          <button onclick="printReport()" class="bg-zinc-800 hover:bg-zinc-700 px-6 py-3 rounded-2xl flex items-center gap-2">
-            <i class="fas fa-print"></i> Print Report
-          </button>
+        <div class="flex justify-between items-center mb-8">
+          <h2 class="text-3xl font-semibold">Monthly Report</h2>
+          <button onclick="printReport()" class="bg-zinc-800 px-6 py-3 rounded-2xl">Print</button>
         </div>
-        <input id="month-select" type="month" class="bg-zinc-900 border border-zinc-700 rounded-2xl px-6 py-3 mb-8" onchange="loadMonthlyReport()">
+        <input id="month-select" type="month" onchange="loadMonthlyReport()" class="bg-zinc-900 border border-zinc-700 rounded-2xl px-6 py-3 mb-8">
         <div id="monthly-summary" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
         <canvas id="reportChart" class="mt-10"></canvas>
       </div>
@@ -86,7 +83,7 @@
 
   <script>
     const API_URL = 'https://script.google.com/macros/s/AKfycbxR9VT5qPHhtjOxmk0GsYwHLOisCJRLYnoLWf2AauRNQD9I6AqsUrCAe6Qr_B65hlJb5A/exec';
-    const PASSWORD = "nami";
+    const PASSWORD = "123456";
 
     let chartInstance = null;
 
@@ -95,8 +92,9 @@
         document.getElementById('password-screen').classList.add('hidden');
         document.getElementById('main-app').classList.remove('hidden');
         showTab(0);
-        loadDashboard();
-      } else alert("Wrong Password");
+      } else {
+        alert("Wrong Password");
+      }
     }
 
     function showTab(n) {
@@ -106,47 +104,47 @@
       if (n === 2) loadMonthlyReport();
     }
 
-    async function fetchData(action, params = {}) {
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({action, ...params})
-      });
-      return res.json();
-    }
-
     async function loadDashboard() {
       try {
-        const data = await fetchData('getMonthlySummary', {yearMonth: new Date().toISOString().slice(0,7)});
-        document.getElementById('inc').textContent = data.income + '৳';
-        document.getElementById('exp').textContent = data.expense + '৳';
-        document.getElementById('sav').textContent = data.savings + '৳';
-      } catch(e) { console.error(e); }
+        const month = new Date().toISOString().slice(0,7);
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({action: 'getMonthlySummary', yearMonth: month})
+        });
+        const data = await res.json();
+        document.getElementById('inc').textContent = (data.income || 0) + '৳';
+        document.getElementById('exp').textContent = (data.expense || 0) + '৳';
+        document.getElementById('sav').textContent = (data.savings || 0) + '৳';
+      } catch(e) { console.log("Dashboard load error"); }
     }
 
     async function loadMonthlyReport() {
       const month = document.getElementById('month-select').value;
       if (!month) return;
-      
       try {
-        const data = await fetchData('getMonthlySummary', {yearMonth: month});
-        const container = document.getElementById('monthly-summary');
-        container.innerHTML = `
-          <div class="glass p-6 rounded-3xl"><p class="text-zinc-400">Income</p><p class="text-4xl font-semibold text-emerald-400">${data.income}৳</p></div>
-          <div class="glass p-6 rounded-3xl"><p class="text-zinc-400">Expense</p><p class="text-4xl font-semibold text-rose-400">${data.expense}৳</p></div>
-          <div class="glass p-6 rounded-3xl"><p class="text-zinc-400">Savings</p><p class="text-4xl font-semibold text-cyan-400">${data.savings}৳</p></div>
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({action: 'getMonthlySummary', yearMonth: month})
+        });
+        const data = await res.json();
+
+        document.getElementById('monthly-summary').innerHTML = `
+          <div class="glass p-6 rounded-3xl"><p class="text-zinc-400">Income</p><p class="text-4xl font-semibold text-emerald-400">${data.income||0}৳</p></div>
+          <div class="glass p-6 rounded-3xl"><p class="text-zinc-400">Expense</p><p class="text-4xl font-semibold text-rose-400">${data.expense||0}৳</p></div>
+          <div class="glass p-6 rounded-3xl"><p class="text-zinc-400">Savings</p><p class="text-4xl font-semibold text-cyan-400">${data.savings||0}৳</p></div>
         `;
 
         if (chartInstance) chartInstance.destroy();
-        const ctx = document.getElementById('reportChart');
-        chartInstance = new Chart(ctx, {
+        chartInstance = new Chart(document.getElementById('reportChart'), {
           type: 'doughnut',
           data: {
             labels: ['Income', 'Expense', 'Savings'],
-            datasets: [{ data: [data.income, data.expense, data.savings], backgroundColor: ['#10b981', '#ef4444', '#22d3ee'] }]
+            datasets: [{ data: [data.income||0, data.expense||0, data.savings||0], backgroundColor: ['#10b981', '#ef4444', '#22d3ee'] }]
           }
         });
-      } catch(e) { console.error(e); }
+      } catch(e) { console.log("Report load error"); }
     }
 
     function printReport() {
@@ -157,11 +155,13 @@
     document.getElementById('entry-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = e.target.querySelector('button');
-      btn.innerHTML = 'Adding...'; btn.disabled = true;
+      const original = btn.innerHTML;
+      btn.innerHTML = 'Adding...';
+      btn.disabled = true;
 
       const data = {
         action: "add",
-        date: document.getElementById('date').value,
+        date: document.getElementById('date').value || new Date().toISOString().slice(0,10),
         type: document.getElementById('type').value,
         category: document.getElementById('category').value,
         amount: document.getElementById('amount').value,
@@ -169,26 +169,35 @@
       };
 
       try {
-        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(data), headers: {'Content-Type': 'application/json'} });
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(data)
+        });
         const result = await res.json();
+
         if (result.success) {
-          alert("✅ Added Successfully!");
+          alert("✅ Transaction Added Successfully!");
           e.target.reset();
           document.getElementById('date').valueAsDate = new Date();
           loadDashboard();
+        } else {
+          alert("Error: " + (result.message || "Unknown error"));
         }
       } catch(err) {
-        alert("Error adding data");
+        console.error(err);
+        alert("❌ Connection Error\n\nMake sure Apps Script is Redeployed with Anyone access.");
       }
-      btn.innerHTML = 'Add Transaction'; btn.disabled = false;
+      btn.innerHTML = original;
+      btn.disabled = false;
     });
 
-    // Auto Refresh Dashboard every 5 seconds
+    // Auto Refresh
     setInterval(() => {
       if (!document.getElementById('tab-0').classList.contains('hidden')) loadDashboard();
-    }, 5000);
+    }, 8000);
 
-    // Init
+    // Initialize
     document.getElementById('date').valueAsDate = new Date();
     document.getElementById('month-select').value = new Date().toISOString().slice(0,7);
   </script>
