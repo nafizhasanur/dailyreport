@@ -5,216 +5,147 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FinanceFlow • Personal Finance</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
     body { font-family: 'Inter', system-ui, sans-serif; }
-    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); }
+    .glass { background: rgba(255,255,255,0.06); backdrop-filter: blur(12px); }
     .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-    .card-hover:hover { transform: translateY(-6px); box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4); }
+    .card-hover:hover { transform: translateY(-4px); }
   </style>
 </head>
 <body class="bg-zinc-950 text-zinc-200 min-h-screen">
+
   <!-- Password Screen -->
-  <div id="password-screen" class="fixed inset-0 bg-zinc-950 flex items-center justify-center z-50">
-    <div class="glass p-10 rounded-3xl w-full max-w-md border border-zinc-700">
+  <div id="password-screen" class="fixed inset-0 bg-zinc-950 flex items-center justify-center z-50 px-4">
+    <div class="glass p-8 md:p-10 rounded-3xl w-full max-w-md border border-zinc-700">
       <div class="text-center mb-8">
         <div class="w-16 h-16 mx-auto bg-gradient-to-br from-cyan-400 to-blue-500 rounded-2xl flex items-center justify-center text-3xl font-bold mb-4">FF</div>
         <h1 class="text-3xl font-semibold">FinanceFlow</h1>
-        <p class="text-zinc-400 mt-2">Secure Personal Finance Tracker</p>
+        <p class="text-zinc-400 mt-2">Secure Finance Tracker</p>
       </div>
       <input id="password-input" type="password" placeholder="Enter Password" 
              class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-6 py-4 text-lg focus:outline-none focus:border-cyan-500 mb-6">
-      <button onclick="checkPassword()" 
-              class="w-full bg-white text-black font-semibold py-4 rounded-2xl hover:bg-cyan-400 transition-all duration-300">
-        Unlock
-      </button>
+      <button onclick="checkPassword()" class="w-full bg-white text-black font-semibold py-4 rounded-2xl hover:bg-cyan-400">Unlock</button>
     </div>
   </div>
 
   <!-- Main App -->
   <div id="main-app" class="hidden max-w-7xl mx-auto p-4 md:p-8">
-    <!-- Header -->
-    <header class="flex justify-between items-center mb-8">
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
       <div class="flex items-center gap-4">
         <div class="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-2xl flex items-center justify-center text-2xl font-bold">FF</div>
-        <h1 class="text-3xl font-semibold tracking-tight">FinanceFlow</h1>
+        <h1 class="text-3xl font-semibold">FinanceFlow</h1>
       </div>
       <div class="flex gap-2 bg-zinc-900 rounded-3xl p-1">
-        <button onclick="showTab(0)" class="tab-btn px-6 py-2.5 rounded-3xl font-medium">Dashboard</button>
-        <button onclick="showTab(1)" class="tab-btn px-6 py-2.5 rounded-3xl font-medium">Add Entry</button>
-        <button onclick="showTab(2)" class="tab-btn px-6 py-2.5 rounded-3xl font-medium">Monthly</button>
+        <button onclick="showTab(0)" class="tab-btn px-6 py-3 rounded-3xl font-medium">Dashboard</button>
+        <button onclick="showTab(1)" class="tab-btn px-6 py-3 rounded-3xl font-medium">Add Entry</button>
+        <button onclick="showTab(2)" class="tab-btn px-6 py-3 rounded-3xl font-medium">Monthly</button>
       </div>
     </header>
 
-    <!-- Dashboard Tab -->
-    <div id="tab-0" class="tab-content">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <div class="glass p-6 rounded-3xl card-hover">
-          <p class="text-zinc-400">Total Income</p>
-          <p id="total-income" class="text-5xl font-semibold text-emerald-400 mt-3">0৳</p>
-        </div>
-        <div class="glass p-6 rounded-3xl card-hover">
-          <p class="text-zinc-400">Total Expense</p>
-          <p id="total-expense" class="text-5xl font-semibold text-rose-400 mt-3">0৳</p>
-        </div>
-        <div class="glass p-6 rounded-3xl card-hover">
-          <p class="text-zinc-400">Net Balance</p>
-          <p id="net-balance" class="text-5xl font-semibold text-cyan-400 mt-3">0৳</p>
-        </div>
-      </div>
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="glass p-6 rounded-3xl">
-          <h3 class="mb-4 text-lg font-medium">Income vs Expense</h3>
-          <canvas id="pieChart" height="180"></canvas>
-        </div>
-        <div class="glass p-6 rounded-3xl">
-          <h3 class="mb-4 text-lg font-medium">Recent Transactions</h3>
-          <div id="recent-list" class="space-y-4"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Add Entry Tab + Summary Bottom -->
-    <div id="tab-1" class="tab-content hidden">
-      <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
-        <!-- Form -->
-        <div class="lg:col-span-2">
-          <div class="glass p-8 rounded-3xl">
-            <h2 class="text-2xl font-semibold mb-6">New Transaction</h2>
-            <form id="entry-form" class="space-y-6">
-              <div>
-                <label class="block text-sm text-zinc-400 mb-2">Type</label>
-                <select id="type" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4 focus:border-cyan-500">
-                  <option value="Expense">Expense (খরচ)</option>
-                  <option value="Income">Income (আয়)</option>
-                  <option value="Savings">Savings (সঞ্চয়)</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-sm text-zinc-400 mb-2">Category</label>
-                <input id="category" type="text" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4" placeholder="Food, Salary, Transport...">
-              </div>
-              <div class="grid grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-sm text-zinc-400 mb-2">Amount (৳)</label>
-                  <input id="amount" type="number" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4" required>
-                </div>
-                <div>
-                  <label class="block text-sm text-zinc-400 mb-2">Date</label>
-                  <input id="date" type="date" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4">
-                </div>
-              </div>
-              <div>
-                <label class="block text-sm text-zinc-400 mb-2">Description</label>
-                <textarea id="description" rows="3" class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4"></textarea>
-              </div>
-              <button type="submit" class="w-full bg-white hover:bg-cyan-400 text-black font-semibold py-4 rounded-3xl transition-all">Add Transaction</button>
-            </form>
-          </div>
-        </div>
-
-        <!-- Monthly Summary -->
-        <div class="lg:col-span-3">
-          <div class="glass p-8 rounded-3xl">
-            <div class="flex justify-between items-center mb-6">
-              <h2 class="text-2xl font-semibold">This Month Summary</h2>
-              <input id="month-select" type="month" class="bg-zinc-900 border border-zinc-700 rounded-2xl px-4 py-2">
+    <!-- Add Entry Tab (সবচেয়ে গুরুত্বপূর্ণ) -->
+    <div id="tab-1" class="tab-content">
+      <div class="max-w-2xl mx-auto">
+        <div class="glass p-8 rounded-3xl">
+          <h2 class="text-2xl font-semibold mb-6">New Transaction</h2>
+          <form id="entry-form" class="space-y-6">
+            <div>
+              <label class="block text-sm text-zinc-400 mb-2">Type</label>
+              <select id="type" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4">
+                <option value="Expense">Expense (খরচ)</option>
+                <option value="Income">Income (আয়)</option>
+                <option value="Savings">Savings (সঞ্চয়)</option>
+              </select>
             </div>
-            <div id="monthly-summary" class="grid grid-cols-3 gap-4"></div>
-          </div>
+            <div>
+              <label class="block text-sm text-zinc-400 mb-2">Category</label>
+              <input id="category" type="text" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4" placeholder="Food, Salary, etc.">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm text-zinc-400 mb-2">Amount (৳)</label>
+                <input id="amount" type="number" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4" required>
+              </div>
+              <div>
+                <label class="block text-sm text-zinc-400 mb-2">Date</label>
+                <input id="date" type="date" class="w-full bg-zinc-900 border border-zinc-700 rounded-2xl px-5 py-4">
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm text-zinc-400 mb-2">Description</label>
+              <textarea id="description" rows="3" class="w-full bg-zinc-900 border border-zinc-700 rounded-3xl px-5 py-4"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-white hover:bg-cyan-400 text-black font-semibold py-4 rounded-3xl text-lg">Add Transaction</button>
+          </form>
         </div>
-      </div>
-    </div>
-
-    <!-- Monthly Detailed Tab -->
-    <div id="tab-2" class="tab-content hidden">
-      <div class="glass p-8 rounded-3xl">
-        <h2 class="text-2xl font-semibold mb-6">Monthly Overview</h2>
-        <canvas id="monthlyChart" height="120"></canvas>
       </div>
     </div>
   </div>
 
   <script>
-  const API_URL = 'https://script.google.com/macros/s/YOUR_WEB_APP_URL_HERE/exec'; // ← তোমার Apps Script URL ঠিকমতো বসাও
-  const PASSWORD = "123456"; // তোমার পাসওয়ার্ড
+    const API_URL = 'https://script.google.com/macros/s/AKfycbw6CHVetvzCei1PYcGhP0Uk3Ifj28tXNcfKOeKICtAUmZltZyAVLtztV3I_VPYHzN8tGg/exec';
+    const PASSWORD = "123456";   // চাইলে পরিবর্তন করো
 
-  let pieChart, monthlyChart;
-
-  function checkPassword() {
-    const input = document.getElementById('password-input').value;
-    if (input === PASSWORD) {
-      document.getElementById('password-screen').classList.add('hidden');
-      document.getElementById('main-app').classList.remove('hidden');
-      loadDashboard();
-    } else {
-      alert("Wrong Password!");
+    function checkPassword() {
+      if (document.getElementById('password-input').value === PASSWORD) {
+        document.getElementById('password-screen').classList.add('hidden');
+        document.getElementById('main-app').classList.remove('hidden');
+        showTab(1);
+      } else {
+        alert("Wrong Password!");
+      }
     }
-  }
 
-  function showTab(n) {
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-    document.getElementById(`tab-${n}`).classList.remove('hidden');
-    if (n === 1) document.getElementById('month-select').value = new Date().toISOString().slice(0,7);
-  }
-
-  // ==================== FIXED FETCH FUNCTION ====================
-  document.getElementById('entry-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = e.target.querySelector('button');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = 'Adding...';
-    btn.disabled = true;
-
-    const data = {
-      action: 'add',
-      date: document.getElementById('date').value || new Date().toISOString().slice(0,10),
-      type: document.getElementById('type').value,
-      category: document.getElementById('category').value.trim(),
-      amount: document.getElementById('amount').value,
-      description: document.getElementById('description').value.trim()
-    };
-
-    try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: { 
-          'Content-Type': 'application/json' 
-        },
-        mode: 'no-cors'          // ← এটা গুরুত্বপূর্ণ (localhost এর জন্য)
-      });
-
-      // no-cors মোডে response body পড়া যায় না, তাই সাকসেস ধরে নিচ্ছি
-      alert('✅ Transaction Added Successfully!');
-      e.target.reset();
-      document.getElementById('date').valueAsDate = new Date();
-      
-      // Dashboard রিফ্রেশ (পরে আরও উন্নত করবো)
-      loadDashboard();
-
-    } catch (err) {
-      console.error(err);
-      alert('❌ Failed to connect to Google Sheet.\n\n' + 
-            'সমাধান:\n' +
-            '1. Apps Script ঠিকমতো Deploy করা হয়েছে কিনা চেক করো\n' +
-            '2. Web App URL সঠিক আছে কিনা দেখো\n' +
-            '3. Spreadsheet ID সঠিক আছে কিনা চেক করো');
-    } finally {
-      btn.innerHTML = originalText;
-      btn.disabled = false;
+    function showTab(n) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`tab-${n}`).classList.remove('hidden');
     }
-  });
 
-  async function loadDashboard() {
-    console.log("✅ Dashboard Loaded");
-    // পরে এখানে real data fetch যোগ করবো
-  }
+    // Form Submit
+    document.getElementById('entry-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = 'Adding...';
+      btn.disabled = true;
 
-  // Initialize
-  document.getElementById('date').valueAsDate = new Date();
-  showTab(0);
-</script>
+      const data = {
+        action: 'add',
+        date: document.getElementById('date').value || new Date().toISOString().slice(0,10),
+        type: document.getElementById('type').value,
+        category: document.getElementById('category').value.trim(),
+        amount: document.getElementById('amount').value,
+        description: document.getElementById('description').value.trim()
+      };
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          alert('✅ Transaction Added Successfully!');
+          e.target.reset();
+          document.getElementById('date').valueAsDate = new Date();
+        } else {
+          alert('❌ ' + (result.message || 'Something went wrong'));
+        }
+      } catch (err) {
+        console.error(err);
+        alert('❌ Failed to connect to Google Sheet.\n\nPlease check:\n1. Apps Script Redeploy করা হয়েছে কিনা\n2. Spreadsheet ID সঠিক আছে কিনা');
+      } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    });
+
+    // Initialize
+    document.getElementById('date').valueAsDate = new Date();
+    showTab(1);
+  </script>
 </body>
 </html>
